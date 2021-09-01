@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import '../../model/post.dart';
+import 'package:jetnews/src/model/post.dart';
 
 class PostCardTop extends StatelessWidget {
   final Post post;
@@ -9,34 +9,36 @@ class PostCardTop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
+    final typography = Theme.of(context).textTheme;
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (post.imageId != null)
-            Container(
+          ConstrainedBox(
+            constraints: BoxConstraints(minHeight: 180),
               child: ClipRRect(
+                // TODO Use Material shape
                 borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                child: Image(image: AssetImage(post.imageId ?? "images/placeholder_4_3.png")),
+                child: Image.asset(post.imageId!, fit: BoxFit.cover),
               ),
-            ),
-          SizedBox(height: 16.0),
+          ),
+          SizedBox(height: 16),
           Text(
             post.title,
-            style: textTheme.headline6
-                ?.copyWith(color: textTheme.headline6?.color?.withOpacity(0.87)),
+            style: typography.headline6?.copyWith(
+                color: typography.headline6?.color?.withOpacity(0.87)),
           ),
+          SizedBox(height: 8),
           Text(
             post.metadata.author.name,
-            style: textTheme.bodyText1
-                ?.copyWith(color: textTheme.bodyText1?.color?.withOpacity(0.87)),
+            style: typography.subtitle2,
           ),
+          SizedBox(height: 4),
           Text(
             "${post.metadata.date} - ${post.metadata.readTimeMinutes} min read",
-            style: textTheme.bodyText1
-                ?.copyWith(color: textTheme.bodyText1?.color?.withOpacity(0.6)),
+            style: typography.subtitle2?.copyWith(
+                color: typography.bodyText1?.color?.withOpacity(0.6)),
           ),
         ],
       ),

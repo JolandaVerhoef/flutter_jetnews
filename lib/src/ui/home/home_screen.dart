@@ -1,26 +1,116 @@
 import 'package:flutter/material.dart';
-import '../../data/posts_data.dart';
+import 'package:jetnews/src/ui/article/article_screen.dart';
+import 'package:jetnews/src/ui/home/home_model.dart';
+import 'package:jetnews/src/ui/navigationDrawer.dart';
+import 'package:provider/provider.dart';
 import '../../model/post.dart';
 import '../../ui/home/post_card_top.dart';
 import '../../ui/home/post_card_your_network.dart';
 import '../../ui/home/post_cards.dart';
 
 class HomeScreen extends StatelessWidget {
+  static const String routeName = '/';
+
   @override
   Widget build(BuildContext context) {
-    final postTop = post1;
-    final postsSimple = [post1, post1];
-    final postsPopular = [post1, post1, post1, post1, post1];
-    final postsHistory = [post1, post1, post1];
-
-    return ListView(
-      children: <Widget>[
-        HomeScreenTopSection(postTop),
-        HomeScreenSimpleSection(postsSimple),
-        HomeScreenPopularSection(postsPopular),
-        HomeScreenHistorySection(postsHistory)
-      ],
+    return ChangeNotifierProvider(
+      create: (context) => HomeModel(),
+      child: Scaffold(
+        appBar: AppBar(title: const Text("Jetnews")),
+        drawer: NavigationDrawer(),
+        body: Consumer<HomeModel>(
+            builder: (BuildContext context, homeModel, Widget? child) {
+          return LoadingContent(
+              empty: homeModel.initialLoad,
+              emptyContent: FullScreenLoading(),
+              loading: homeModel.loading,
+              onRefreshPosts: homeModel.refreshPosts,
+              child: HomeScreenErrorAndContent(
+                  posts: homeModel.posts,
+                  isShowingErrors: homeModel.errorMessages.isNotEmpty,
+                  onRefresh: homeModel.refreshPosts));
+        }),
+      ),
     );
+  }
+}
+
+// TODO snackbar
+class LoadingContent extends StatelessWidget {
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
+
+  final bool empty;
+  final Widget emptyContent;
+  final bool loading;
+  final VoidCallback onRefreshPosts;
+  final Widget child;
+
+  LoadingContent(
+      {required this.empty,
+      required this.emptyContent,
+      required this.loading,
+      required this.onRefreshPosts,
+      required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    if (empty) {
+      return emptyContent;
+    } else {
+      if (loading) _refreshIndicatorKey.currentState?.show();
+
+      return RefreshIndicator(
+        key: _refreshIndicatorKey,
+        onRefresh: () {
+          onRefreshPosts();
+          return Future.value();
+        },
+        child: child,
+      );
+
+      //   return loading
+      //       ? RefreshIndicator(
+      //           onRefresh: () => Future<void>.delayed(const Duration(seconds: 1)),
+      //           child: child)
+      //       : child;
+    }
+  }
+}
+
+class HomeScreenErrorAndContent extends StatelessWidget {
+  final List<Post> posts;
+  final bool isShowingErrors;
+  final VoidCallback onRefresh;
+
+  HomeScreenErrorAndContent(
+      {required this.posts,
+      required this.isShowingErrors,
+      required this.onRefresh});
+
+  @override
+  Widget build(BuildContext context) {
+    if (posts.isNotEmpty) {
+      return ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          children: [
+            HomeScreenTopSection(posts[3]),
+            HomeScreenSimpleSection(posts.sublist(0, 2)),
+            HomeScreenPopularSection(posts.sublist(0, 4)),
+            HomeScreenHistorySection(posts.sublist(0, 4))
+          ]);
+    } else if (!isShowingErrors) {
+      return Text('Tap to load content');
+    } else {
+      return Text('Nothing to see here');
+    }
+  }
+}
+
+class FullScreenLoading extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(child: CircularProgressIndicator());
   }
 }
 
@@ -40,12 +130,14 @@ class HomeScreenTopSection extends StatelessWidget {
             opacity: 0.87,
             child: Text(
               "Top stories for you",
-              style: Theme.of(context).textTheme.subtitle,
+              style: Theme.of(context).textTheme.subtitle2,
             ),
           ),
         ),
         InkWell(
-          onTap: () {},
+          onTap: () {
+            Navigator.pushNamed(context, ArticleScreen.routeName);
+          },
           child: PostCardTop(post),
         ),
         HomeScreenDivider(),
