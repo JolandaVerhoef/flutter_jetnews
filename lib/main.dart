@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:jetnews_flutter/src/ui/home/home_screen.dart';
-import 'package:jetnews_flutter/src/ui/interests/interests_screen.dart';
-import 'package:jetnews_flutter/src/ui/themes.dart';
+import 'package:jetnews/src/ui/home/home_screen.dart';
+import 'package:jetnews/src/ui/interests/interests_screen.dart';
+import 'package:jetnews/src/ui/themes.dart';
 
 void main() => runApp(JetnewsApp());
 

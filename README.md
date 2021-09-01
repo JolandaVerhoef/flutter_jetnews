@@ -1,6 +1,6 @@
-# jetnews_flutter
+# jetnews
 
-Flutter implementation of Jetnews
+Flutter port of Jetnews Sample app
 
 ## Getting Started
 

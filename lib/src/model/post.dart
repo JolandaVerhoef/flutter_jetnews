@@ -21,7 +21,7 @@ class Post {
   final List<Paragraph> paragraphs;
 
   /// Required
-  final String imageId;
+  final String? imageId;
 
   /// Required
   final String imageThumbId;
@@ -95,7 +95,7 @@ class Markup {
   final int end;
 
   /// Optional
-  final String href; // optional
+  final String? href; // optional
 
   Markup(this.type, this.start, this.end, this.href);
 }

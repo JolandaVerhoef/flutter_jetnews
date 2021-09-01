@@ -19,24 +19,24 @@ class PostCardTop extends StatelessWidget {
             Container(
               child: ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                child: Image.asset(post.imageId),
+                child: Image(image: AssetImage(post.imageId ?? "images/placeholder_4_3.png")),
               ),
             ),
           SizedBox(height: 16.0),
           Text(
             post.title,
-            style: textTheme.title
-                .copyWith(color: textTheme.title.color.withOpacity(0.87)),
+            style: textTheme.headline6
+                ?.copyWith(color: textTheme.headline6?.color?.withOpacity(0.87)),
           ),
           Text(
             post.metadata.author.name,
-            style: textTheme.body1
-                .copyWith(color: textTheme.body1.color.withOpacity(0.87)),
+            style: textTheme.bodyText1
+                ?.copyWith(color: textTheme.bodyText1?.color?.withOpacity(0.87)),
           ),
           Text(
             "${post.metadata.date} - ${post.metadata.readTimeMinutes} min read",
-            style: textTheme.body1
-                .copyWith(color: textTheme.body1.color.withOpacity(0.6)),
+            style: textTheme.bodyText1
+                ?.copyWith(color: textTheme.bodyText1?.color?.withOpacity(0.6)),
           ),
         ],
       ),

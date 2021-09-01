@@ -33,7 +33,7 @@ class PostImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.asset(post.imageThumbId ?? "images/placeholder_1_1.png",
+    return Image(image: AssetImage(post.imageThumbId),
         width: 40, height: 40);
   }
 }
