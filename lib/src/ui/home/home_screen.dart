@@ -68,12 +68,6 @@ class LoadingContent extends StatelessWidget {
         },
         child: child,
       );
-
-      //   return loading
-      //       ? RefreshIndicator(
-      //           onRefresh: () => Future<void>.delayed(const Duration(seconds: 1)),
-      //           child: child)
-      //       : child;
     }
   }
 }
@@ -159,9 +153,17 @@ class HomeScreenSimpleSection extends StatelessWidget {
 //      );
 //    });
     return Column(children: [
-      PostCardSimple(postsSimple[0]),
+      PostCardSimple(
+        post: postsSimple[0],
+        isFavorite: false,
+        onToggleFavorite: () {},
+      ),
       HomeScreenDivider(),
-      PostCardSimple(postsSimple[1]),
+      PostCardSimple(
+        post: postsSimple[1],
+        isFavorite: false,
+        onToggleFavorite: () {},
+      ),
       HomeScreenDivider(),
     ]);
   }
@@ -181,19 +183,17 @@ class HomeScreenPopularSection extends StatelessWidget {
           padding: EdgeInsets.all(16),
           child: Text(
             "Popular on Jetnews",
-            style: Theme.of(context).textTheme.subtitle,
+            style: Theme.of(context).textTheme.subtitle1,
           ),
         ),
         Container(
-          height: 200,
-          child: ListView(
+          height: 240,
+          child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            children: <Widget>[
-              PostCardPopular(postsPopular[0]),
-              PostCardPopular(postsPopular[1]),
-              PostCardPopular(postsPopular[2]),
-              PostCardPopular(postsPopular[3]),
-            ],
+            itemCount: postsPopular.length,
+            itemBuilder: (context, index) {
+              return PostCardPopular(postsPopular[index]);
+            },
           ),
         )
       ],

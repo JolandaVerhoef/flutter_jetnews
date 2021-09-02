@@ -17,11 +17,11 @@ class PostCardTop extends StatelessWidget {
         children: [
           ConstrainedBox(
             constraints: BoxConstraints(minHeight: 180),
-              child: ClipRRect(
-                // TODO Use Material shape
-                borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                child: Image.asset(post.imageId!, fit: BoxFit.cover),
-              ),
+            child: ClipRRect(
+              // TODO Use Material shape
+              borderRadius: BorderRadius.all(Radius.circular(4.0)),
+              child: Image.asset(post.imageId!, fit: BoxFit.cover),
+            ),
           ),
           SizedBox(height: 16),
           Text(
