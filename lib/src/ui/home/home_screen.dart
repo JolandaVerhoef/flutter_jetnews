@@ -7,6 +7,7 @@ import '../../model/post.dart';
 import '../../ui/home/post_card_top.dart';
 import '../../ui/home/post_card_your_network.dart';
 import '../../ui/home/post_cards.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeScreen extends StatelessWidget {
   static const String routeName = '/';
@@ -16,7 +17,7 @@ class HomeScreen extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => HomeModel(),
       child: Scaffold(
-        appBar: AppBar(title: const Text("Jetnews")),
+        appBar: AppBar(title: Text(AppLocalizations.of(context)!.app_name)),
         drawer: NavigationDrawer(),
         body: Consumer<HomeModel>(
             builder: (BuildContext context, homeModel, Widget? child) {
@@ -123,14 +124,15 @@ class HomeScreenTopSection extends StatelessWidget {
           child: Opacity(
             opacity: 0.87,
             child: Text(
-              "Top stories for you",
+              AppLocalizations.of(context)!.home_top_section_title,
               style: Theme.of(context).textTheme.subtitle2,
             ),
           ),
         ),
         InkWell(
           onTap: () {
-            Navigator.pushNamed(context, ArticleScreen.routeName);
+            Navigator.pushNamed(context, ArticleScreen.routeName,
+                arguments: post.id);
           },
           child: PostCardTop(post),
         ),
@@ -182,7 +184,7 @@ class HomeScreenPopularSection extends StatelessWidget {
         Padding(
           padding: EdgeInsets.all(16),
           child: Text(
-            "Popular on Jetnews",
+            AppLocalizations.of(context)!.home_popular_section_title,
             style: Theme.of(context).textTheme.subtitle1,
           ),
         ),

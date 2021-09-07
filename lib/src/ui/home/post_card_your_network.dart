@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jetnews/src/ui/article/article_screen.dart';
 import '../../model/post.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PostCardPopular extends StatelessWidget {
   final Post post;
@@ -13,7 +14,8 @@ class PostCardPopular extends StatelessWidget {
     return Card(
         clipBehavior: Clip.antiAliasWithSaveLayer,
         child: InkWell(
-            onTap: () => Navigator.pushNamed(context, ArticleScreen.routeName),
+            onTap: () => Navigator.pushNamed(context, ArticleScreen.routeName,
+                arguments: post.id),
             child: Container(
                 width: 280,
                 child: Column(
@@ -40,7 +42,9 @@ class PostCardPopular extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                           ),
                           Text(
-                            "${post.metadata.date} - ${post.metadata.readTimeMinutes} min read",
+                            AppLocalizations.of(context)!.home_post_min_read(
+                                post.metadata.author.name,
+                                post.metadata.readTimeMinutes),
                             style: Theme.of(context).textTheme.bodyText2,
                           )
                         ],

@@ -3,6 +3,7 @@ import 'package:flutter/semantics.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jetnews/src/ui/article/article_screen.dart';
 import '../../model/post.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AuthorAndReadTime extends StatelessWidget {
   final Post post;
@@ -13,7 +14,8 @@ class AuthorAndReadTime extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(children: [
       Text(
-        "${post.metadata.author.name} - ${post.metadata.readTimeMinutes} min read",
+        AppLocalizations.of(context)!.home_post_min_read(
+            post.metadata.author.name, post.metadata.readTimeMinutes),
         style: Theme.of(context).textTheme.bodyText2,
       ),
     ]);
@@ -62,11 +64,13 @@ class PostCardSimple extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       customSemanticsActions: {
-        CustomSemanticsAction(label: isFavorite ? "unbookmark" : "bookmark"):
-            onToggleFavorite
+        CustomSemanticsAction(
+            label: isFavorite
+                ? AppLocalizations.of(context)!.unbookmark
+                : AppLocalizations.of(context)!.bookmark): onToggleFavorite
       },
       child: InkWell(
-        onTap: () => Navigator.pushNamed(context, ArticleScreen.routeName),
+        onTap: () => Navigator.pushNamed(context, ArticleScreen.routeName, arguments: post.id),
         child: Padding(
           padding: EdgeInsets.all(16),
           child: Row(
@@ -105,7 +109,9 @@ class BookmarkButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       icon: Icon(isBookmarked ? Icons.bookmark : Icons.bookmark_border),
-      tooltip: isBookmarked ? 'Unbookmark' : 'Bookmark',
+      tooltip: isBookmarked
+          ? AppLocalizations.of(context)!.unbookmark
+          : AppLocalizations.of(context)!.bookmark,
       onPressed: onClick,
     );
   }

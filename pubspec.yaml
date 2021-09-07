@@ -24,11 +24,15 @@ dependencies:
   flutter:
     sdk: flutter
 
+  flutter_localizations:
+    sdk: flutter
+
+  intl: ^0.17.0
   provider: ^6.0.0
-
   uuid: ^3.0.4
-
   google_fonts: ^2.1.0
+  mockito: 5.0.15
+  build_runner: 2.1.2
 
 dev_dependencies:
   flutter_test:
@@ -44,6 +48,9 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  # Used for localization
+  generate: true
 
   assets:
     - images/
