@@ -149,18 +149,11 @@ class HomeScreenSimpleSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      itemCount: postsSimple.length,
-      itemBuilder: (context, index) {
-        return PostCardSimple(
-          post: postsSimple[index],
-          isFavorite: false,
-          onToggleFavorite: () {},
-        );
-      },
-      separatorBuilder: (context, index) {
-        return HomeScreenDivider();
-      },
+    var postcards = postsSimple.expand(
+            (post) => [PostCardSimple(post: post), HomeScreenDivider()]
+    ).toList();
+    return Column(
+      children: postcards,
     );
   }
 }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jetnews/src/ui/article/article_screen.dart';
+import 'package:jetnews/src/ui/favorites_model.dart';
+import 'package:provider/provider.dart';
 import '../../model/post.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -52,49 +54,50 @@ class PostTitle extends StatelessWidget {
 
 class PostCardSimple extends StatelessWidget {
   final Post post;
-  final bool isFavorite;
-  final VoidCallback onToggleFavorite;
 
-  PostCardSimple(
-      {required this.post,
-      required this.isFavorite,
-      required this.onToggleFavorite});
+  PostCardSimple({required this.post});
 
   @override
   Widget build(BuildContext context) {
-    return Semantics(
-      customSemanticsActions: {
-        CustomSemanticsAction(
-            label: isFavorite
-                ? AppLocalizations.of(context)!.unbookmark
-                : AppLocalizations.of(context)!.bookmark): onToggleFavorite
-      },
-      child: InkWell(
-        onTap: () => Navigator.pushNamed(context, ArticleScreen.routeName, arguments: post.id),
-        child: Padding(
-          padding: EdgeInsets.all(16),
-          child: Row(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(right: 16),
-                child: PostImage(post),
+    return Consumer<FavoritesModel>(
+      builder: (key, favoritesModel, _) {
+        var _isFavorite = favoritesModel.favorites.contains(post.id);
+        var _label = _isFavorite
+            ? AppLocalizations.of(context)!.unbookmark
+            : AppLocalizations.of(context)!.bookmark;
+        return Semantics(
+          customSemanticsActions: {
+            CustomSemanticsAction(label: _label): () => favoritesModel.toggleFavorite(post.id)
+          },
+          child: InkWell(
+            onTap: () => Navigator.pushNamed(context, ArticleScreen.routeName,
+                arguments: post.id),
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(right: 16),
+                    child: PostImage(post),
+                  ),
+                  Flexible(
+                    child: Column(
+                      children: <Widget>[
+                        PostTitle(post),
+                        AuthorAndReadTime(post),
+                      ],
+                    ),
+                  ),
+                  BookmarkButton(
+                    isBookmarked: _isFavorite,
+                    onClick: () => favoritesModel.toggleFavorite(post.id),
+                  ),
+                ],
               ),
-              Flexible(
-                child: Column(
-                  children: <Widget>[
-                    PostTitle(post),
-                    AuthorAndReadTime(post),
-                  ],
-                ),
-              ),
-              BookmarkButton(
-                isBookmarked: isFavorite,
-                onClick: onToggleFavorite,
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
