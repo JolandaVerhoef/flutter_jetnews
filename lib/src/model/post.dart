@@ -1,103 +1,69 @@
+/*
+ * Copyright 2020 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 class Post {
-  /// Required
   final String id;
-
-  /// Required
   final String title;
-
-  /// Optional
-  final String subtitle;
-
-  /// Required
+  final String? subtitle;
   final String url;
-
-  /// Optional
-  final Publication publication;
-
-  /// Required
+  final Publication? publication;
   final Metadata metadata;
-
-  /// Required
   final List<Paragraph> paragraphs;
-
-  /// Required
-  final String imageId;
-
-  /// Required
+  final String? imageId;
   final String imageThumbId;
 
-  Post(
-      this.id,
-      this.title,
-      this.subtitle,
-      this.url,
-      this.publication,
-      this.metadata,
-      this.paragraphs,
-      this.imageId,
-      this.imageThumbId);
+  const Post(this.id, this.title, this.subtitle, this.url, this.publication,
+      this.metadata, this.paragraphs, this.imageId, this.imageThumbId);
 }
 
 class Metadata {
-  /// Required
   final PostAuthor author;
-
-  /// Required
   final String date;
-
-  /// Required
   final int readTimeMinutes;
 
-  Metadata(this.author, this.date, this.readTimeMinutes);
+  const Metadata(this.author, this.date, this.readTimeMinutes);
 }
 
 class PostAuthor {
-  /// Required
   final String name;
+  final String? url;
 
-  /// Optional
-  final String url;
-
-  PostAuthor(this.name, this.url);
+  const PostAuthor(this.name, this.url);
 }
 
 class Publication {
-  /// Required
-  final String name;
-
-  /// Required
-  final String logoUrl;
-
-  Publication(this.name, this.logoUrl);
+  final String name, logoUrl;
+  const Publication(this.name, this.logoUrl);
 }
 
 class Paragraph {
-  /// Required
   final ParagraphType type;
-
-  /// Required
   final String text;
-
-  /// Required
   final List<Markup> markups;
 
-  Paragraph(this.type, this.text, this.markups);
+  const Paragraph(this.type, this.text, this.markups);
 }
 
 class Markup {
-  /// Required
   final MarkupType type;
-
-  /// Required
   final int start;
-
-  /// Required
   final int end;
+  final String? href;
 
-  /// Optional
-  final String href; // optional
-
-  Markup(this.type, this.start, this.end, this.href);
+  const Markup(this.type, this.start, this.end, this.href);
 }
 
 enum MarkupType {

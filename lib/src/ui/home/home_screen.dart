@@ -1,26 +1,127 @@
+/*
+ * Copyright 2020 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import 'package:flutter/material.dart';
-import '../../data/posts_data.dart';
+import 'package:jetnews/src/ui/article/article_screen.dart';
+import 'package:jetnews/src/ui/home/home_model.dart';
+import 'package:jetnews/src/ui/navigationDrawer.dart';
+import 'package:provider/provider.dart';
 import '../../model/post.dart';
 import '../../ui/home/post_card_top.dart';
 import '../../ui/home/post_card_your_network.dart';
 import '../../ui/home/post_cards.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeScreen extends StatelessWidget {
+  static const String routeName = '/';
+
   @override
   Widget build(BuildContext context) {
-    final postTop = post1;
-    final postsSimple = [post1, post1];
-    final postsPopular = [post1, post1, post1, post1, post1];
-    final postsHistory = [post1, post1, post1];
-
-    return ListView(
-      children: <Widget>[
-        HomeScreenTopSection(postTop),
-        HomeScreenSimpleSection(postsSimple),
-        HomeScreenPopularSection(postsPopular),
-        HomeScreenHistorySection(postsHistory)
-      ],
+    return ChangeNotifierProvider(
+      create: (context) => HomeModel(),
+      child: Scaffold(
+        appBar: AppBar(title: Text(AppLocalizations.of(context)!.app_name)),
+        drawer: NavigationDrawer(),
+        body: Consumer<HomeModel>(
+            builder: (BuildContext context, homeModel, Widget? child) {
+          return LoadingContent(
+              empty: homeModel.initialLoad,
+              emptyContent: FullScreenLoading(),
+              loading: homeModel.loading,
+              onRefreshPosts: homeModel.refreshPosts,
+              child: HomeScreenErrorAndContent(
+                  posts: homeModel.posts,
+                  isShowingErrors: homeModel.errorMessages.isNotEmpty,
+                  onRefresh: homeModel.refreshPosts));
+        }),
+      ),
     );
+  }
+}
+
+// TODO snackbar
+class LoadingContent extends StatelessWidget {
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
+
+  final bool empty;
+  final Widget emptyContent;
+  final bool loading;
+  final VoidCallback onRefreshPosts;
+  final Widget child;
+
+  LoadingContent(
+      {required this.empty,
+      required this.emptyContent,
+      required this.loading,
+      required this.onRefreshPosts,
+      required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    if (empty) {
+      return emptyContent;
+    } else {
+      if (loading) _refreshIndicatorKey.currentState?.show();
+
+      return RefreshIndicator(
+        key: _refreshIndicatorKey,
+        onRefresh: () {
+          onRefreshPosts();
+          return Future.value();
+        },
+        child: child,
+      );
+    }
+  }
+}
+
+class HomeScreenErrorAndContent extends StatelessWidget {
+  final List<Post> posts;
+  final bool isShowingErrors;
+  final VoidCallback onRefresh;
+
+  HomeScreenErrorAndContent(
+      {required this.posts,
+      required this.isShowingErrors,
+      required this.onRefresh});
+
+  @override
+  Widget build(BuildContext context) {
+    if (posts.isNotEmpty) {
+      return ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          children: [
+            HomeScreenTopSection(posts[3]),
+            HomeScreenSimpleSection(posts.sublist(0, 2)),
+            HomeScreenPopularSection(posts.sublist(0, 4)),
+            HomeScreenHistorySection(posts.sublist(0, 4))
+          ]);
+    } else if (!isShowingErrors) {
+      return Text('Tap to load content');
+    } else {
+      return Text('Nothing to see here');
+    }
+  }
+}
+
+class FullScreenLoading extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(child: CircularProgressIndicator());
   }
 }
 
@@ -39,13 +140,16 @@ class HomeScreenTopSection extends StatelessWidget {
           child: Opacity(
             opacity: 0.87,
             child: Text(
-              "Top stories for you",
-              style: Theme.of(context).textTheme.subtitle,
+              AppLocalizations.of(context)!.home_top_section_title,
+              style: Theme.of(context).textTheme.subtitle2,
             ),
           ),
         ),
         InkWell(
-          onTap: () {},
+          onTap: () {
+            Navigator.pushNamed(context, ArticleScreen.routeName,
+                arguments: post.id);
+          },
           child: PostCardTop(post),
         ),
         HomeScreenDivider(),
@@ -61,17 +165,12 @@ class HomeScreenSimpleSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-//    postsSimple.map((Post post) {
-//      Column(
-//        children: <Widget>[PostCardSimple(post), HomeScreenDivider()],
-//      );
-//    });
-    return Column(children: [
-      PostCardSimple(postsSimple[0]),
-      HomeScreenDivider(),
-      PostCardSimple(postsSimple[1]),
-      HomeScreenDivider(),
-    ]);
+    var postcards = postsSimple.expand(
+            (post) => [PostCardSimple(post: post), HomeScreenDivider()]
+    ).toList();
+    return Column(
+      children: postcards,
+    );
   }
 }
 
@@ -88,20 +187,18 @@ class HomeScreenPopularSection extends StatelessWidget {
         Padding(
           padding: EdgeInsets.all(16),
           child: Text(
-            "Popular on Jetnews",
-            style: Theme.of(context).textTheme.subtitle,
+            AppLocalizations.of(context)!.home_popular_section_title,
+            style: Theme.of(context).textTheme.subtitle1,
           ),
         ),
         Container(
-          height: 200,
-          child: ListView(
+          height: 240,
+          child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            children: <Widget>[
-              PostCardPopular(postsPopular[0]),
-              PostCardPopular(postsPopular[1]),
-              PostCardPopular(postsPopular[2]),
-              PostCardPopular(postsPopular[3]),
-            ],
+            itemCount: postsPopular.length,
+            itemBuilder: (context, index) {
+              return PostCardPopular(postsPopular[index]);
+            },
           ),
         )
       ],

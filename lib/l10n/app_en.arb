@@ -1,0 +1,51 @@
+{
+  "app_name": "Jetnews",
+  "load_error": "Can't update latest news",
+  "retry": "Retry",
+  "cd_navigate_up": "Navigate up",
+  "cd_add_to_favorites": "Add to favorites",
+  "cd_share": "Share",
+  "cd_text_settings": "Text settings",
+  "cd_open_navigation_drawer": "Open navigation drawer",
+  "cd_more_actions": "More actions",
+  "cd_bookmark": "Bookmark",
+  "unbookmark": "unbookmark",
+  "bookmark": "bookmark",
+  "cd_search": "Search",
+  "cd_interests": "Interests",
+  "published_in": "Published in: {magazine}",
+  "fewer_stories": "Show fewer stories like this",
+  "fewer_stories_content": "This feature is not yet implemented",
+  "agree": "AGREE",
+  "close": "CLOSE",
+
+  "home_title": "Home",
+  "home_tap_to_load_content": "Tap to load content",
+  "home_top_section_title": "Top stories for you",
+  "home_popular_section_title": "Popular on Jetnews",
+  "home_post_min_read": "{author} - {minutes} min read",
+  "@home_post_min_read": {
+    "placeholders": {
+      "author": {},
+      "minutes": {}
+    }
+  },
+  "home_post_based_on_history": "BASED ON YOUR HISTORY",
+
+  "article_published_in": "Published in: %s",
+  "article_functionality_not_available": "Functionality not available \uD83D\uDE48",
+  "article_share_post": "Share post",
+  "article_post_min_read": "{author} • {minutes} min read",
+  "@article_post_min_read": {
+    "placeholders": {
+      "author": {},
+      "minutes": {}
+    }
+  },
+
+
+  "interests_title": "Interests",
+  "interests_section_topics": "Topics",
+  "interests_section_people": "People",
+  "interests_section_publications": "Publications"
+}
